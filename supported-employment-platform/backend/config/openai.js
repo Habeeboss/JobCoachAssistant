@@ -1,9 +1,9 @@
 const { AzureOpenAI } = require('openai');
 
 const client = new AzureOpenAI({
-  apiKey: 'your-azure-openai-key',
-  endpoint: 'https://your-endpoint.openai.azure.com',
-  apiVersion: '2023-05-15'
+  apiKey: process.env.OPENAI_API_KEY,
+  endpoint: process.env.OPENAI_ENDPOINT,
+  apiVersion: '2024-11-20'
 });
 
 const getChatbotResponse = async (prompt) => {
