@@ -1,25 +1,29 @@
+require('dotenv').config();
 const { MongoClient } = require('mongodb');
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first'); // Prioritize IPv4
+dns.setServers(['8.8.8.8', '8.8.4.4']); // Use Google's DNS
 
-// Use direct connection string with port 10255
 const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);const mongoose = require('mongoose');
 require('dotenv').config();
-
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("✅ Connected to MongoDB!"))
-  .catch(err => console.error("❌ MongoDB Connection Error:", err));
 
 let db;
 
 async function connectDB() {
   try {
-    await client.connect();
+    await client.connect({
+      serverSelectionTimeoutMS: 60000, // Increase timeout to 30 seconds
+      socketTimeoutMS: 70000,
+    });
     db = client.db('supported_employment');
     console.log('Connected to Azure Cosmos DB MongoDB API');
+    console.log("✅ MongoDB Connected Successfully!");
     return db;
   } catch (err) {
-    console.error('Connection error:', err);
+    console.error("❌ MongoDB Connection Error:", err);
     process.exit(1);
+    
   }
 }
 
